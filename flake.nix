@@ -19,10 +19,16 @@
           android_sdk.accept_license = true;
         };
       };
-    in {
+    in rec {
       packages = {
         docker = pkgs.callPackage ./package/docker.nix {};
         runner = pkgs.callPackage ./package/runner.nix {};
+      };
+      apps = {
+        runner = flake-utils.lib.mkApp {
+          name = "run-emulator";
+          drv = packages.runner;
+        };
       };
       devShells.default = pkgs.mkShell {
         packages = let
