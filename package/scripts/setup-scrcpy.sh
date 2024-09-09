@@ -1,5 +1,3 @@
-#!/bin/bash
-
 start_scrcpy() {
     local SCRCPY_SERVER_PATH="$1"
     local PORT="$2"

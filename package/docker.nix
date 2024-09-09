@@ -1,12 +1,12 @@
 {
   pkgs,
   android-composition ?
-    pkgs.androidenv.composeAndroidPackages {
+    (pkgs.androidenv.composeAndroidPackages {
       cmdLineToolsVersion = "8.0";
       toolsVersion = "26.1.1";
       platformToolsVersion = "34.0.4";
       platformVersions = ["34"];
-    },
+    }),
   ...
 }: let
   run-android-emulator = (import ./utils/emulator.nix) {inherit pkgs;};

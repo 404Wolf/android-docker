@@ -1,13 +1,7 @@
 {pkgs, ...}:
 pkgs.writeShellScriptBin "android-emulator" ''
-  function shutdown(){
-    echo "SIGTERM is received! Clean-up will be executed if needed!"
-    PROCESS_ID=$(pgrep -f "start device")
-    kill $PROCESS_ID
-    sleep 10
-  }
-  trap shutdown SIGTERM
-
+  ${builtins.readFile ../scripts/handle-shutdown.sh}
+  
   adb start
   ${pkgs.androidenv.emulateApp {
     name = "android-emulator";

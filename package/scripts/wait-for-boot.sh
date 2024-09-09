@@ -11,9 +11,5 @@ while ! is_booted; do
     sleep 5
 done
 
+# Log that the emulator is ready
 echo "Emulator is ready!"
-
-# Optional: Wait a bit more to ensure all services are up
-sleep 10
-
-echo "Emulator is fully booted and ready to use."
