@@ -40,25 +40,5 @@
         }).androidsdk)
       ];
     };
-  }) // (let
-    pkgs = (import nixpkgs) {
-      system = "x86_64-linux";
-      config = {
-        allowUnfree = true;
-        android_sdk.accept_license = true;
-      };
-    };
-    hci-effects = inputs.hercules-ci-effects.lib.withPkgs pkgs;
-  in {
-    effects = {
-      arion = hci-effects.runArion {
-        name = "android-emulator";
-        # ignores arion-pkgs.nix even if present
-        modules = [ ./arion-compose.nix ];
-        userSetupScript = ''
-          # ...
-        '';
-      };
-    };
   });
 }
