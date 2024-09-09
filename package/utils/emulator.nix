@@ -2,7 +2,7 @@
 pkgs.writeShellScriptBin "android-emulator" ''
   ${builtins.readFile ../scripts/handle-shutdown.sh}
   
-  # adb start
+  adb start
   ${pkgs.androidenv.emulateApp {
     name = "android-emulator";
     abiVersion = "x86_64";
@@ -12,7 +12,7 @@ pkgs.writeShellScriptBin "android-emulator" ''
   }}/bin/run-test-emulator & :
   echo "Started android emulator. PID: $!"
 
-  # ${builtins.readFile ../scripts/wait-for-boot.sh}
-  # ${builtins.readFile ../scripts/setup-scrcpy.sh}
-  # ${builtins.readFile ../scripts/start-ffmpeg.sh}
+  ${builtins.readFile ../scripts/wait-for-boot.sh}
+  ${builtins.readFile ../scripts/setup-scrcpy.sh}
+  ${builtins.readFile ../scripts/start-ffmpeg.sh}
 ''

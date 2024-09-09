@@ -27,6 +27,19 @@
       default = docker;
       docker = pkgs.callPackage ./package/docker.nix {};
     };
+    apps = rec {
+      emulator = {
+        type = "app";
+        program = ''${pkgs.androidenv.emulateApp {
+            name = "android-emulator";
+            abiVersion = "x86_64";
+            platformVersion = "33";
+            systemImageType = "google_apis_playstore";
+            androidEmulatorFlags = "-no-window";
+          }}/bin/run-test-emulator'';
+      };
+      default = emulator;
+    };
     devShells.default = pkgs.mkShell {
       packages = [
         pkgs.podman-compose
