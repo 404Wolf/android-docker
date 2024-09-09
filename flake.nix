@@ -19,24 +19,33 @@
           android_sdk.accept_license = true;
         };
       };
-    in rec {
-      packages = {
+    in {
+      packages = rec {
+        default = docker;
         docker = pkgs.callPackage ./package/docker.nix {};
-        runner = pkgs.callPackage ./package/runner.nix {};
-      };
-      apps = {
-        runner = flake-utils.lib.mkApp {
-          name = "run-emulator";
-          drv = packages.runner;
-        };
       };
       devShells.default = pkgs.mkShell {
-        packages = let
-          android-composition = (import ./package/utils/composition.nix) {inherit pkgs;};
-          android-sdk = android-composition.androidsdk;
-        in [
-          android-sdk
+        packages = [
+          pkgs.podman-compose
+          pkgs.podman
+          pkgs.arion
+          ((pkgs.androidenv.composeAndroidPackages {
+              cmdLineToolsVersion = "8.0";
+              toolsVersion = "26.1.1";
+              platformToolsVersion = "34.0.4";
+              platformVersions = ["34"];
+            })
+            .androidsdk)
         ];
       };
-    });
+    })
+    // {
+      pkgs = (import nixpkgs) {
+        system = "x86_64-linux";
+        config = {
+          allowUnfree = true;
+          android_sdk.accept_license = true;
+        };
+      };
+    };
 }

@@ -1,6 +1,15 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  android-composition ?
+    pkgs.androidenv.composeAndroidPackages {
+      cmdLineToolsVersion = "8.0";
+      toolsVersion = "26.1.1";
+      platformToolsVersion = "34.0.4";
+      platformVersions = ["34"];
+    },
+  ...
+}: let
   run-android-emulator = (import ./utils/emulator.nix) {inherit pkgs;};
-  android-composition = (import ./utils/composition.nix) {inherit pkgs;};
   android-sdk = android-composition.androidsdk;
 in
   pkgs.dockerTools.buildImage {
@@ -14,7 +23,7 @@ in
         pkgs.coreutils
         pkgs.busybox
         pkgs.bash
-        android-sdk
+        android-composition.androidsdk
       ];
     };
 
