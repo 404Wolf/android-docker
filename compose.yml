@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  android-runner:
+    image: localhost/androidrunner:latest
+    command: find -name *android-stream*
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - "5558:5554"

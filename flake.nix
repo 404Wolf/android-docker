@@ -5,7 +5,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
-    scrcpy-server = "github:browser-phone/scrcpy";
+    scrcpy-server.url = "github:browser-phone/scrcpy";
   };
 
   outputs = {
@@ -22,27 +22,37 @@
           android_sdk.accept_license = true;
         };
       };
+
+      android-composition = pkgs.androidenv.composeAndroidPackages {
+        cmdLineToolsVersion = "8.0";
+        toolsVersion = "26.1.1";
+        platformToolsVersion = "34.0.4";
+        platformVersions = ["34"];
+      };
+
+      emulate-args = {
+        name = "android-emulator";
+        abiVersion = "x86_64";
+        platformVersion = "33";
+        systemImageType = "default";
+        androidEmulatorFlags = "-no-window -no-metrics -verbose -skip-adb-auth";
+      };
     in {
       packages = rec {
         default = docker;
-        docker = pkgs.callPackage ./package/docker.nix {
-          scrcpy-server = inputs.scrcpy-server.${system}.packages.default;
+        docker = pkgs.callPackage ./src/docker {
+          inherit android-composition emulate-args;
+          scrcpy-server = inputs.scrcpy-server.packages.${system}.default;
         };
       };
       devShells.default = pkgs.mkShell {
+        PODMAN_IGNORE_CGROUPSV1_WARNING = "1";
         packages = [
           pkgs.podman-compose
           pkgs.podman
           pkgs.arion
           pkgs.scrcpy
-          ((pkgs.androidenv.composeAndroidPackages {
-              cmdLineToolsVersion = "8.0";
-              toolsVersion = "26.1.1";
-              platformToolsVersion = "34.0.4";
-              platformVersions = ["34"];
-              includeEmulator = true;
-            })
-            .androidsdk)
+          android-composition.androidsdk
         ];
       };
     });
