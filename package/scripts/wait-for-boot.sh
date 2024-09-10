@@ -8,8 +8,9 @@ echo "Starting emulator..."
 # Wait for the emulator to be ready
 while ! is_booted; do
     echo "Waiting for emulator to boot..."
-    sleep 5
+    sleep 3
 done
+sleep 2
 
 # Log that the emulator is ready
 echo "Emulator is ready!"
