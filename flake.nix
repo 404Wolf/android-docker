@@ -35,7 +35,7 @@
             abiVersion = "x86_64";
             platformVersion = "33";
             systemImageType = "google_apis_playstore";
-            androidEmulatorFlags = "-no-window";
+            androidEmulatorFlags = "-no-window -gpu guest -engine qemu2 -no-accel -accel off -verbose";
           }}/bin/run-test-emulator'';
       };
       default = emulator;
