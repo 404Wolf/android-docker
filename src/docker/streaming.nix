@@ -25,7 +25,7 @@
       SCRCPY_STATUS_FILE=$(mktemp)
       ${builtins.readFile ../scripts/setup-scrcpy.sh} ${scrcpy-video-port} > SCRCPY_STATUS_FILE &
 
-      while [ tac | head -n1 =~ "*[*" ]; do
+      while ! grep -q ".*\[.*\]" <(tac "$SCRCPY_STATUS_FILE" | head -n1); do
         sleep 1
       done
 

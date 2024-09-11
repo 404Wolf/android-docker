@@ -1,3 +1,5 @@
+# shellcheck disable=SC2034
+
 start_scrcpy() {
     local VIDEO_PORT="$1"
     local AUDIO_PORT="$2"

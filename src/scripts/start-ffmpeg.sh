@@ -16,8 +16,3 @@ ffmpeg \
     -f rtp "rtp://$IP:$output_port" \
     -sdp_file video.sdp
 
-if [ "$?" -eq 0 ]; then
-    echo "Processing finished!"
-else
-    echo "Error occurred during processing."
-fi
