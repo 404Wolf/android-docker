@@ -1,27 +1,43 @@
 {
-  pkgs,
+  ffmpeg,
+  dockerTools,
+  writeShellApplication,
+  callPackage,
+  buildEnv,
+  busybox,
   scrcpy-video-port,
   scrcpy-audio-port,
   scrcpy-data-port,
+  scrcpy-server,
   adb-port,
-  emulator-port,
   emulator-args,
   android-composition,
-  scrcpy-server,
   ...
 }: let
-  run-android-streamer = pkgs.writeShellScriptBin "run-android-streamer" ''
-    ${builtins.readFile ../scripts/setup-scrcpy.sh} ${scrcpy-video-port} & :
-    sleep 2
-    ${builtins.readFile ../scripts/start-ffmpeg.sh}
-  '';
+  run-android-streamer = writeShellApplication {
+    name = "run-android-streamer";
+    runtimeInputs = [
+      android-composition.androidsdk
+      busybox
+      ffmpeg
+    ];
+    text = ''
+      SCRCPY_STATUS_FILE=$(mktemp)
+      ${builtins.readFile ../scripts/setup-scrcpy.sh} ${scrcpy-video-port} > SCRCPY_STATUS_FILE &
+
+      while [ tac | head -n1 =~ "*[*" ]; do
+        sleep 1
+      done
+
+      ${builtins.readFile ../scripts/start-ffmpeg.sh}
+    '';
+  };
 in
-  pkgs.dockerTools.buildImage {
-    fromImage = pkgs.callPackage ./emulator.nix {
+  dockerTools.buildImage {
+    fromImage = callPackage ./emulator.nix {
       inherit
         adb-port
         android-composition
-        emulator-port
         emulator-args
         ;
     };
@@ -37,7 +53,7 @@ in
         scrcpy-audio-port
         scrcpy-data-port
       ];
-      copyToRoot = pkgs.buildEnv {
+      copyToRoot = buildEnv {
         name = "root";
         pathsToLink = ["/bin"];
         paths = [

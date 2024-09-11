@@ -30,7 +30,7 @@
         platformVersions = ["34"];
       };
 
-      emulate-args = {
+      emulator-args = {
         name = "android-emulator";
         abiVersion = "x86_64";
         platformVersion = "33";
@@ -41,7 +41,7 @@
       packages = rec {
         default = docker;
         docker = pkgs.callPackage ./src/docker {
-          inherit android-composition emulate-args;
+          inherit android-composition emulator-args;
           scrcpy-server = inputs.scrcpy-server.packages.${system}.default;
         };
       };

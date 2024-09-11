@@ -3,7 +3,7 @@ version: "3.8"
 services:
   android-runner:
     image: localhost/androidrunner:latest
-    command: find -name *android-stream*
+    command: "sleep 99999999"
     devices:
       - /dev/kvm:/dev/kvm
     ports:
