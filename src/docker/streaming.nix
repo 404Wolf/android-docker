@@ -53,12 +53,12 @@ in
         scrcpy-audio-port
         scrcpy-data-port
       ];
-      copyToRoot = buildEnv {
-        name = "root";
-        pathsToLink = ["/bin"];
-        paths = [
-          run-android-streamer
-        ];
-      };
+    };
+    copyToRoot = buildEnv {
+      name = "root";
+      pathsToLink = ["/bin"];
+      paths = [
+        run-android-streamer
+      ];
     };
   }

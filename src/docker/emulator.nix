@@ -7,6 +7,7 @@
   writeShellApplication,
   buildEnv,
   androidenv,
+  callPackage,
   ...
 }: let
   run-android-emulator = writeShellApplication {
@@ -24,7 +25,7 @@
 
       adb devices
       adb shell settings put global adb_wifi_enabled 1
-      adb tcpip adb-port
+      adb tcpip ${adb-port}
       adb devices
       echo "Started android emulator. PID: $!"
     '';
@@ -33,9 +34,9 @@
   android-sdk = android-composition.androidsdk;
 in
   dockerTools.buildImage {
+    fromImage = callPackage ./base.nix {};
     name = "AndroidEmulator";
     tag = "latest";
-
     config = {
       Env = [
         "ANDROID_SDK_ROOT=${android-sdk}/libexec/android-sdk"
@@ -44,10 +45,10 @@ in
       EXPOSE = [
         adb-port
       ];
-      copyToRoot = buildEnv {
-        name = "root";
-        pathsToLink = ["/bin"];
-        paths = [run-android-emulator];
-      };
+    };
+    copyToRoot = buildEnv {
+      name = "root";
+      pathsToLink = ["/bin"];
+      paths = [run-android-emulator];
     };
   }

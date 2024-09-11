@@ -14,13 +14,13 @@ dockerTools.buildImage {
   tag = "latest";
   fromImage = callPackage ./streaming.nix {
     inherit
-      scrcpy-server
-      android-composition
       scrcpy-video-port
       scrcpy-audio-port
       scrcpy-data-port
       adb-port
       emulator-args
+      scrcpy-server
+      android-composition
       ;
   };
   config = {
