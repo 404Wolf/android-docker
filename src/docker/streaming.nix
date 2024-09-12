@@ -23,13 +23,10 @@
     ];
     text = ''
       SCRCPY_STATUS_FILE=$(mktemp)
-      ${builtins.readFile ../scripts/setup-scrcpy.sh} ${scrcpy-video-port} > SCRCPY_STATUS_FILE &
+      source ${../scripts/start-scrcpy.sh}
+      source ${../scripts/start-ffmpeg.sh}
 
-      while ! grep -q ".*\[.*\]" <(tac "$SCRCPY_STATUS_FILE" | head -n1); do
-        sleep 1
-      done
-
-      ${builtins.readFile ../scripts/start-ffmpeg.sh}
+      start_scrcpy ${scrcpy-video-port} > SCRCPY_STATUS_FILE &
     '';
   };
 in

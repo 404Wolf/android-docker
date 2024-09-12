@@ -1,6 +1,5 @@
 # shellcheck disable=SC2034
 
-
 start_scrcpy() {
     local VIDEO_PORT="$1"
     local AUDIO_PORT="$2"
@@ -34,13 +33,13 @@ start_scrcpy() {
       raw_stream=true \
       max_size=1920 \
       video_bit_rate=35000000 \
-      video_codec_options=bitrate-mode=4,latency=0 \
-      max_fps=30" &
+      video_codec_options=bitrate-mode=2,latency=0 \
+      max_fps=30" | tee "$SCRCPY_STATUS_FILE"
 
     echo "Started launching scrcpy"
 
     start_time=$(date +%s)
-    timeout=60
+    timeout=20
     while ! tail -n1 "$SCRCPY_STATUS_FILE" 2>/dev/null | grep -q "^\[server"; do
         echo "Waiting for scrcpy to ready up"
         sleep 1

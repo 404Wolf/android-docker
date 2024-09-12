@@ -1,3 +1,3 @@
 mkdir -p /tmp
-mkdir /.android
+mkdir -p /.android
 
