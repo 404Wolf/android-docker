@@ -1,10 +1,11 @@
 {
   python3,
+  androidenv,
   busybox,
   writeShellApplication,
   android-composition,
   ...
-}: {
+}: rec {
   start-ffmpeg = writeShellApplication {
     name = "start-ffmpeg";
     runtimeInputs = [(python3.withPackages (pyPkgs: with pyPkgs; [ffmpy]))];
@@ -30,4 +31,17 @@
     runtimeInputs = [busybox];
     text = builtins.readFile ./setup-environment.sh;
   };
+  run-android-emulator = {emulator-args}:
+    writeShellApplication {
+      name = "run-android-emulator";
+      runtimeInputs = [
+        busybox
+        android-composition.androidsdk
+        (androidenv.emulateApp emulator-args)
+        wait-for-boot
+        handle-shutdown
+        setup-environment
+      ];
+      text = builtins.readFile ./run-android-emulator.sh;
+    };
 }

@@ -4,12 +4,10 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
-    scrcpy-server.url = "github:browser-phone/scrcpy";
+    scrcpy.url = "github:browser-phone/scrcpy";
   };
 
   outputs = {
-    self,
     nixpkgs,
     flake-utils,
     ...
@@ -35,26 +33,16 @@
         abiVersion = "x86_64";
         platformVersion = "33";
         systemImageType = "default";
-        androidEmulatorFlags = "-no-window -no-metrics -verbose -skip-adb-auth -no-snapshot-save";
+        androidEmulatorFlags = "-no-window -no-metrics -verbose -skip-adb-auth";
       };
     in {
       packages = rec {
         default = docker;
-        scripts = pkgs.callPackage ./src/scripts {
-          inherit android-composition emulator-args;
-        };
         docker = pkgs.callPackage ./src/docker {
           inherit android-composition emulator-args scripts;
-          scrcpy-server = inputs.scrcpy-server.packages.${system}.default;
-          dockerTools.buildImage = args:
-            pkgs.dockerTools.buildImage (
-              {
-                compressor = "none";
-                buildVMMemorySize = 8128;
-                diskSize = 2048;
-              }
-              // args
-            );
+        };
+        scripts = pkgs.callPackage ./src/scripts {
+          inherit android-composition emulator-args;
         };
       };
       devShells.default = pkgs.mkShell {
@@ -62,19 +50,15 @@
         packages = [
           pkgs.podman-compose
           pkgs.podman
-          pkgs.arion
-          pkgs.scrcpy
-          (pkgs.python3.withPackages (pyPkgs: [
-            pyPkgs.ffmpy
-          ]))
-          (pkgs.androidenv.composeAndroidPackages {
-            cmdLineToolsVersion = "8.0";
-            toolsVersion = "26.1.1";
-            platformToolsVersion = "34.0.4";
-            platformVersions = ["34"];
-            includeEmulator = true;
-          })
-          .androidsdk
+          ((pkgs.androidenv.composeAndroidPackages {
+              cmdLineToolsVersion = "8.0";
+              toolsVersion = "26.1.1";
+              platformToolsVersion = "34.0.4";
+              platformVersions = ["34"];
+              includeEmulator = true;
+            })
+            .androidsdk)
+          (inputs.scrcpy.packages.${system}.scrcpy)
         ];
       };
     });

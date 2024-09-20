@@ -3,8 +3,8 @@ version: "3.8"
 services:
   android-runner:
     image: localhost/androidrunner:latest
-    command: "sleep inf"
+    command: "run-android-emulator"
     devices:
       - /dev/kvm:/dev/kvm
     ports:
-      - "5559:5554"
+      - "6000:5554"
