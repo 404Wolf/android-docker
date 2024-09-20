@@ -4,6 +4,7 @@
   emulator-args,
   dockerTools,
   busybox,
+  scripts,
   writeShellApplication,
   buildEnv,
   androidenv,
@@ -15,13 +16,17 @@
     runtimeInputs = [
       busybox
       android-composition.androidsdk
+      (androidenv.emulateApp emulator-args)
+      scripts.wait-for-boot
+      scripts.handle-shutdown
+      scripts.setup-environment
     ];
     text = ''
-      ${builtins.readFile ../scripts/setup-environment.sh}
-      ${builtins.readFile ../scripts/handle-shutdown.sh}
+      setup-environment
+      handle-shutdown
 
-      ${androidenv.emulateApp emulator-args}/bin/run-test-emulator & :
-      ${builtins.readFile ../scripts/wait-for-boot.sh}
+      run-test-emulator & :
+      wait-for-boot
 
       adb devices
       adb shell settings put global adb_wifi_enabled 1
