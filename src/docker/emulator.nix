@@ -10,7 +10,7 @@
   android-sdk = android-composition.androidsdk;
 in
   dockerTools.buildImage {
-    fromImage = callPackage ./base.nix {};
+    fromImage = callPackage ./base.nix {inherit android-composition;};
     name = "AndroidEmulator";
     tag = "latest";
     config = {

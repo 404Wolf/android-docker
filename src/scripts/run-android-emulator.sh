@@ -6,8 +6,8 @@ wait-for-boot
 
 adb devices
 adb shell settings put global adb_wifi_enabled 1
-adb tcpip 5554
 adb devices
+adb tcpip 5554
 echo "Started android emulator. PID: $!"
 
 sleep inf

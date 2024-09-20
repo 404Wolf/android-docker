@@ -3,6 +3,7 @@
   busybox,
   bash,
   dockerTools,
+  android-composition,
   ...
 }:
 dockerTools.buildImage {
@@ -14,6 +15,7 @@ dockerTools.buildImage {
     paths = [
       busybox
       bash
+      (android-composition.androidsdk)
     ];
   };
 }
